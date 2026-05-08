@@ -83,3 +83,10 @@ INSERT INTO working_times (task_id, start_time, end_time) VALUES
   (8,  '2026-04-29 13:30:00', '2026-04-29 15:00:00'),
   (9,  '2026-04-29 15:30:00', '2026-04-29 16:30:00'),
   (10, '2026-04-30 09:00:00', '2026-04-30 11:00:00');
+
+INSERT INTO tasks (title, description, assignee_id, creator_id, event_type, status, priority)
+VALUES ('Fix Bug Login Page', 'Fix lỗi xác thực OTP trên màn hình login', 4, 1, 'task', 'coding', 'high');
+
+INSERT INTO working_times (task_id, start_time, end_time)
+VALUES (LAST_INSERT_ID(), '2026-04-30 13:00:00', '2026-04-30 15:30:00');
+

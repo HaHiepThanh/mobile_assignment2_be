@@ -90,4 +90,60 @@ const getSchedule = async (req, res) => {
   }
 };
 
-module.exports = { getSchedule };
+/**
+ * createTask - Controller for POST /api/tasks
+ *
+ * Creates a new task + working_time entry.
+ * Request body: { title, description, assignee_id, creator_id, event_type, status, priority, start_time, end_time }
+ */
+const createTask = async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const { title, description, assignee_id, creator_id, event_type, status, priority, start_time, end_time } = req.body;
+
+    // Validate required fields
+    if (!title || !assignee_id || !creator_id || !start_time || !end_time) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: title, assignee_id, creator_id, start_time, end_time.',
+      });
+    }
+
+    await connection.beginTransaction();
+
+    // Insert task
+    const [taskResult] = await connection.query(
+      `INSERT INTO tasks (title, description, assignee_id, creator_id, event_type, status, priority)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [title, description || '', assignee_id, creator_id, event_type || 'task', status || 'todo', priority || 'medium']
+    );
+
+    const taskId = taskResult.insertId;
+
+    // Insert working_time
+    await connection.query(
+      `INSERT INTO working_times (task_id, start_time, end_time) VALUES (?, ?, ?)`,
+      [taskId, start_time, end_time]
+    );
+
+    await connection.commit();
+
+    return res.status(201).json({
+      success: true,
+      message: 'Task created successfully.',
+      data: { taskId },
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error('[TaskController] createTask error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error while creating task.',
+      error: error.message,
+    });
+  } finally {
+    connection.release();
+  }
+};
+
+module.exports = { getSchedule, createTask };

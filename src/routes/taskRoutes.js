@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getSchedule } = require('../controllers/taskController');
+const { getSchedule, createTask } = require('../controllers/taskController');
 
 /**
  * @route  GET /api/tasks/schedule
@@ -8,5 +8,12 @@ const { getSchedule } = require('../controllers/taskController');
  * @access Public
  */
 router.get('/schedule', getSchedule);
+
+/**
+ * @route  POST /api/tasks
+ * @desc   Create a new task with working time (manager assigns to employee)
+ * @access Public
+ */
+router.post('/', createTask);
 
 module.exports = router;
