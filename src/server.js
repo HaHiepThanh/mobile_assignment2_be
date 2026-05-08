@@ -31,9 +31,9 @@ app.use((err, _req, res, _next) => {
 });
 
 // ── Start ────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅  Task Dashboard API running on http://localhost:${PORT}`);
-  console.log(`   → Schedule endpoint: http://localhost:${PORT}/api/tasks/schedule`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅  Task Dashboard API running on http://0.0.0.0:${PORT}`);
+  console.log(`   → Schedule endpoint: http://<YOUR_IP>:${PORT}/api/tasks/schedule`);
 });
 
 module.exports = app;
